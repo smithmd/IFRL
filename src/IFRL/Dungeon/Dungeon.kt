@@ -1,7 +1,7 @@
 package IFRL.Dungeon
 
 object Dungeon {
-    private val floorCount: Int = (Math.random() * 5).toInt() + 1
+    private val floorCount: Int = (Math.random() * 5).toInt() + 5
     val floors: List<Floor> = List(floorCount) { Floor() }
 
     init {
