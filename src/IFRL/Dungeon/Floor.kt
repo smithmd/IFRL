@@ -4,6 +4,9 @@ class Floor {
     private val columns: Int = (Math.random() * (8 - 2)).toInt() + 3
     private val rows: Int = (Math.random() * (8 - 2)).toInt() + 3
     val rooms: Array<Room> = Array(columns * rows) { Room(it + 1, it / rows, it % rows) }
+    val doors: Array<Door> = Array(((columns - 1) * rows) + ((rows - 1) * columns)) {
+        Door(rooms[], rooms[])
+    }
 
     init {
 //        println("Creating a $rows x $columns floor")

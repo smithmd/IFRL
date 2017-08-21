@@ -1,9 +1,5 @@
 package IFRL.Dungeon
 
-enum class Direction {
-    NORTH, EAST, SOUTH, WEST
-}
-
 class Room(id: Int, row: Int, col: Int) {
     private val open: Boolean = Math.random() > 0.2
     val description:String = if (open) {"R${id.toString().padStart(2, '0')} "} else {"    "}
