@@ -22,15 +22,28 @@ class Floor {
         createDoors()
     }
 
-    private fun flood(): Unit {
+    private fun init_flood(): Unit {
         var closedPath = false
         var currentRoom = startingRoomIndex
+
+        val touched: MutableList<Room> = mutableListOf()
+
 
 
         // gets here if no path exists between the starting and ending rooms
         if (!closedPath) {
             // do something to attempt to close it
         }
+    }
+
+    private fun flood(node:Room, touched: MutableList<Room>) {
+        if (node in touched) return
+
+        touched.add(node)
+        flood() // south
+        flood() // north
+        flood() // east
+        flood() // west
     }
 
     private fun walk(from: Int, to: Int): Room {
@@ -95,5 +108,13 @@ class Floor {
             index = roomIndexRange.random()
         }
         return index
+    }
+
+    // return Pair<row:Int, col:Int>
+    private fun getRowAndCol(index: Int): Pair<Int, Int> {
+        // TODO: figure out which row/column we're in based on the index. Should be possible
+        val row = 1
+        val col = 2
+        return Pair(row,col)
     }
 }
