@@ -1,10 +1,21 @@
 package IFRL.Dungeon
 
+import java.util.*
+
 class Floor {
     private val columns: Int = (Math.random() * (8 - 2)).toInt() + 3
     private val rows: Int = (Math.random() * (8 - 2)).toInt() + 3
     private val rooms: Array<Room> = Array(columns * rows) { Room(it + 1, it / rows, it % rows) }
     private val doors: MutableMap<Pair<Int,Int>, Door> = mutableMapOf()
+    private val roomIndexRange: IntRange
+        get() = (0 .. columns*rows)
+
+    private val startingRoomIndex: Int = roomIndexRange.random()
+    private val endingRoomIndex: Int = getEndingRoomIndex()
+
+    // https://stackoverflow.com/questions/45685026/how-can-i-get-a-random-number-in-kotlin
+    // TODO: revisit but it's a good starting place for now
+    private fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) +  start
 
     init {
 //        println("Creating a $rows x $columns floor")
@@ -54,4 +65,12 @@ class Floor {
     private fun getCurrentRoomIndex(row:Int, col:Int) = (row * columns) + col
     private fun getEastRoomIndex(row:Int, col:Int) = (row * columns) + col + 1
     private fun getSouthRoomIndex(row:Int, col:Int) = ((row + 1) * columns) + col
+
+    private fun getEndingRoomIndex(): Int {
+        var index = roomIndexRange.random()
+        while (index == startingRoomIndex) {
+            index = roomIndexRange.random()
+        }
+        return index
+    }
 }
