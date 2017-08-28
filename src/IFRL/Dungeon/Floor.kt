@@ -5,7 +5,7 @@ import java.util.*
 class Floor {
     private val columns: Int = (Math.random() * (8 - 2)).toInt() + 3
     private val rows: Int = (Math.random() * (8 - 2)).toInt() + 3
-    private val rooms: Array<Room> = Array(columns * rows) { Room(it + 1, it / rows, it % rows) }
+    private val rooms: Array<Room> = Array(columns * rows) { Room(it + 1, it / columns, it % columns) }
     private val doors: MutableMap<Pair<Int, Int>, Door> = mutableMapOf()
     private val roomIndexRange: IntRange
         get() = (0..columns * rows)
@@ -20,19 +20,20 @@ class Floor {
     init {
 //        println("Creating a $rows x $columns floor")
         createDoors()
+        init_flood()
     }
 
     private fun init_flood(): Unit {
-        var closedPath = false
-        var currentRoom = startingRoomIndex
-
         val touched: MutableList<Room> = mutableListOf()
 
-
+        flood(rooms[startingRoomIndex], touched)
 
         // gets here if no path exists between the starting and ending rooms
-        if (!closedPath) {
+        if (rooms[endingRoomIndex] in touched) {
             // do something to attempt to close it
+            println("*** Ending room reachable. ***")
+        } else {
+            println("Ending room NOT reachable.")
         }
     }
 
@@ -40,10 +41,28 @@ class Floor {
         if (node in touched) return
 
         touched.add(node)
-        flood() // south
-        flood() // north
-        flood() // east
-        flood() // west
+//        println("touching node at ${node.debugDescription} for ($rows x $columns)")
+
+//        try {
+            if (node.row + 1 < rows) {
+//                println("Getting SOUTH for ${node.row}, ${node.col}: Index found ${getSouthRoomIndex(node.row, node.col)}")
+                flood(rooms[getSouthRoomIndex(node.row, node.col)], touched) // south
+            }
+            if (node.row - 1 >= 0) {
+//                println("Getting NORTH for ${node.row}, ${node.col}: Index found ${getNorthRoomIndex(node.row, node.col)}")
+                flood(rooms[getNorthRoomIndex(node.row, node.col)], touched) // north
+            }
+            if (node.col + 1 < columns) {
+//                println("Getting EAST for ${node.row}, ${node.col}: Index found ${getEastRoomIndex(node.row, node.col)}")
+                flood(rooms[getEastRoomIndex(node.row, node.col)], touched) // east
+            }
+            if (node.col - 1 >= 0) {
+//                println("Getting WEST for ${node.row}, ${node.col}: Index found ${getWestRoomIndex(node.row, node.col)}")
+                flood(rooms[getWestRoomIndex(node.row, node.col)], touched) // west
+            }
+//        } catch (e:Exception) {
+//            println("Exception at: Row: ${node.row}, Col: ${node.col}, max ($rows,$columns)")
+//        }
     }
 
     private fun walk(from: Int, to: Int): Room {
@@ -75,6 +94,7 @@ class Floor {
     }
 
     fun drawFloor() {
+        println("($rows x $columns) S: ${rooms[startingRoomIndex].description}, E: ${rooms[endingRoomIndex].description}")
         for (row in 0..(rows - 1)) {
             for (col in 0..(columns - 1)) {
                 val currentRoom: Int = getCurrentRoomIndex(row, col)
@@ -99,7 +119,7 @@ class Floor {
     private fun getCurrentRoomIndex(row: Int, col: Int) = (row * columns) + col
     private fun getEastRoomIndex(row: Int, col: Int) = (row * columns) + col + 1
     private fun getWestRoomIndex(row: Int, col: Int) = (row * columns) + col - 1
-    private fun getNorthRoomIndex(row: Int, col: Int) = ((row + 1) * columns) - col
+    private fun getNorthRoomIndex(row: Int, col: Int) = ((row - 1) * columns) + col
     private fun getSouthRoomIndex(row: Int, col: Int) = ((row + 1) * columns) + col
 
     private fun getEndingRoomIndex(): Int {
@@ -108,13 +128,5 @@ class Floor {
             index = roomIndexRange.random()
         }
         return index
-    }
-
-    // return Pair<row:Int, col:Int>
-    private fun getRowAndCol(index: Int): Pair<Int, Int> {
-        // TODO: figure out which row/column we're in based on the index. Should be possible
-        val row = 1
-        val col = 2
-        return Pair(row,col)
     }
 }
