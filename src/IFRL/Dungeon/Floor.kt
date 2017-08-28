@@ -23,6 +23,7 @@ class Floor {
         init_flood()
     }
 
+    // checks to see if the map is traversable
     private fun init_flood(): Unit {
         val touched: MutableList<Room> = mutableListOf()
 
@@ -37,29 +38,29 @@ class Floor {
         }
     }
 
-    private fun flood(node:Room, touched: MutableList<Room>) {
+    private fun flood(node: Room, touched: MutableList<Room>) {
         if (node in touched) return
 
         touched.add(node)
 //        println("touching node at ${node.debugDescription} for ($rows x $columns)")
 
 //        try {
-            if (node.row + 1 < rows) {
+        if (node.row + 1 < rows) {
 //                println("Getting SOUTH for ${node.row}, ${node.col}: Index found ${getSouthRoomIndex(node.row, node.col)}")
-                flood(rooms[getSouthRoomIndex(node.row, node.col)], touched) // south
-            }
-            if (node.row - 1 >= 0) {
+            flood(rooms[getSouthRoomIndex(node.row, node.col)], touched) // south
+        }
+        if (node.row - 1 >= 0) {
 //                println("Getting NORTH for ${node.row}, ${node.col}: Index found ${getNorthRoomIndex(node.row, node.col)}")
-                flood(rooms[getNorthRoomIndex(node.row, node.col)], touched) // north
-            }
-            if (node.col + 1 < columns) {
+            flood(rooms[getNorthRoomIndex(node.row, node.col)], touched) // north
+        }
+        if (node.col + 1 < columns) {
 //                println("Getting EAST for ${node.row}, ${node.col}: Index found ${getEastRoomIndex(node.row, node.col)}")
-                flood(rooms[getEastRoomIndex(node.row, node.col)], touched) // east
-            }
-            if (node.col - 1 >= 0) {
+            flood(rooms[getEastRoomIndex(node.row, node.col)], touched) // east
+        }
+        if (node.col - 1 >= 0) {
 //                println("Getting WEST for ${node.row}, ${node.col}: Index found ${getWestRoomIndex(node.row, node.col)}")
-                flood(rooms[getWestRoomIndex(node.row, node.col)], touched) // west
-            }
+            flood(rooms[getWestRoomIndex(node.row, node.col)], touched) // west
+        }
 //        } catch (e:Exception) {
 //            println("Exception at: Row: ${node.row}, Col: ${node.col}, max ($rows,$columns)")
 //        }
